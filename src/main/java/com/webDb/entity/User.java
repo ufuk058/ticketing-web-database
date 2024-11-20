@@ -14,6 +14,7 @@ public class User extends BaseEntity{
 
     private String firstName;
     private String lastName;
+    private String phone;
     @Column(unique = true)
     private String userName;
     private String password;
@@ -23,5 +24,7 @@ public class User extends BaseEntity{
 
     @ManyToOne
     private Role role;
+
+    private Boolean isDeleted=false;
 
 }
