@@ -2,6 +2,11 @@ package com.webDb.service;
 
 import com.webDb.dto.RoleDTO;
 
-public interface RoleService extends CrudService<RoleDTO, Long>{
+import java.util.List;
 
+public interface RoleService {
+
+    List<RoleDTO> listAllRoles();
+
+    RoleDTO findById(Long Id);
 }
