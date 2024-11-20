@@ -17,6 +17,6 @@ public class BaseEntity {
 
     private LocalDateTime insertDateTime;
     private Long insertUserId;
-    private LocalDateTime lastUpdatedTime;
+    private LocalDateTime lastUpdateDateTime;
     private Long lastUpdateUserId;
 }
