@@ -16,7 +16,7 @@ public class UserDTO {
     // @NotNull => field should not be null
 
     @NotBlank(message = "First Name is a required field")
-    @Size(max = 15, min = 2, message = "First Name must be between 2 and 15 characters long")
+    @Size(max = 50, min = 2, message = "First Name must be between 2 and 15 characters long")
     private String firstName;
 
     @NotBlank(message = "Last Name is a required field")
