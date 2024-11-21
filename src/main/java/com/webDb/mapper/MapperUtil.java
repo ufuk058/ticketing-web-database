@@ -1,6 +1,7 @@
 package com.webDb.mapper;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -14,6 +15,8 @@ public class MapperUtil {
 
     public <T> T convert(Object objectToBeConverted,Class<T> convertedObject ){
 
+        modelMapper.getConfiguration()
+                .setMatchingStrategy(MatchingStrategies.STRICT);
         return modelMapper.map(objectToBeConverted,convertedObject);
     }
 }
