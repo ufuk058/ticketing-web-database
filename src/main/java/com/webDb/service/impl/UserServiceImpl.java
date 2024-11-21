@@ -60,6 +60,7 @@ public class UserServiceImpl implements UserService {
 
         User user= userRepository.findByUserName(username);
         user.setIsDeleted(true);
+        user.setUserName(user.getUserName()+"-"+user.getId());
         userRepository.save(user);
 
     }
