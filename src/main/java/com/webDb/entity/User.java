@@ -27,6 +27,5 @@ public class User extends BaseEntity{
     @ManyToOne
     private Role role;
 
-    private Boolean isDeleted=false;
 
 }
