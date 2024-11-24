@@ -1,13 +1,19 @@
 package com.webDb.service.impl;
 
+import com.webDb.dto.ProjectDTO;
 import com.webDb.dto.RoleDTO;
+import com.webDb.dto.TaskDTO;
 import com.webDb.dto.UserDTO;
+import com.webDb.entity.Task;
 import com.webDb.entity.User;
 import com.webDb.mapper.MapperUtil;
 import com.webDb.mapper.UserMapper;
 import com.webDb.repository.UserRepository;
+import com.webDb.service.ProjectService;
+import com.webDb.service.TaskService;
 import com.webDb.service.UserService;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,13 +22,16 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-//    private final UserMapper userMapper;
     private final MapperUtil mapperUtil;
+    private final ProjectService projectService;
+    private final TaskService taskService;
 
-    public UserServiceImpl(UserRepository userRepository, MapperUtil mapperUtil) {
+    public UserServiceImpl(UserRepository userRepository, MapperUtil mapperUtil, @Lazy ProjectService projectService,  @Lazy TaskService taskService) {
         this.userRepository = userRepository;
        // this.userMapper = userMapper;
         this.mapperUtil = mapperUtil;
+        this.projectService = projectService;
+        this.taskService = taskService;
     }
 
     @Override
@@ -59,10 +68,29 @@ public class UserServiceImpl implements UserService {
     public void delete(String username) {
 
         User user= userRepository.findByUserName(username);
-        user.setIsDeleted(true);
-        user.setUserName(user.getUserName()+"-"+user.getId());
-        userRepository.save(user);
 
+        if(checkIfUserCanBeDeleted(mapperUtil.convert(user,UserDTO.class))){
+            user.setIsDeleted(true);
+            user.setUserName(user.getUserName()+"-"+user.getId());
+            userRepository.save(user);
+        }
+
+
+    }
+    private boolean checkIfUserCanBeDeleted(UserDTO user){
+        switch(user.getRole().getDescription()){
+            case "Manager":
+                List<ProjectDTO> projectDTOList= projectService.listAllNonCompletedByAssignedManager(user);
+                return  projectDTOList.size()==0;
+
+            case "Employee":
+                List<TaskDTO> taskDTOList= taskService.listAllNonCompletedByAssignedEmployee(user);
+
+                return  taskDTOList.size()==0;
+
+            default:
+                return true;
+        }
     }
 
     @Override

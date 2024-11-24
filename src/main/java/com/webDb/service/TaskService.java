@@ -2,6 +2,7 @@ package com.webDb.service;
 
 import com.webDb.dto.ProjectDTO;
 import com.webDb.dto.TaskDTO;
+import com.webDb.dto.UserDTO;
 import com.webDb.entity.Task;
 import com.webDb.enums.Status;
 
@@ -28,4 +29,6 @@ public interface TaskService {
     List<TaskDTO> listAllTasksByStatusIsNot(Status complete);
 
     List<TaskDTO> litsAllTasksByStatus(Status status);
+
+    List<TaskDTO> listAllNonCompletedByAssignedEmployee(UserDTO user);
 }
