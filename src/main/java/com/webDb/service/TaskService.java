@@ -26,4 +26,6 @@ public interface TaskService {
     void completeByProject(ProjectDTO project);
 
     List<TaskDTO> listAllTasksByStatusIsNot(Status complete);
+
+    List<TaskDTO> litsAllTasksByStatus(Status status);
 }
