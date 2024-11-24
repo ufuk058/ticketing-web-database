@@ -94,17 +94,17 @@ public class ProjectController {
         return "redirect:/project/create";
     }
 
-//    @GetMapping("/manager/project-status")
-//    private String getProjectByManager(Model model) {
-//
-//        UserDTO manager = userService.findById("john@cydeo.com");
-//
-//        model.addAttribute("projects", projectService.getCountedListOfProjectDTO(manager));
-//
-//        return "manager/project-status";
-//
-//    }
-//
+    @GetMapping("/manager/project-status")
+    private String getProjectByManager(Model model) {
+
+
+
+        model.addAttribute("projects", projectService.listAllProjectDetails());
+
+        return "manager/project-status";
+
+    }
+
 //    @GetMapping("/manager/complete/{projectCode}")
 //    public String managerCompleteProject(@PathVariable("projectCode") String projectCode) {
 //
