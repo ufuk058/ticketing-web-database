@@ -1,12 +1,16 @@
 package com.webDb.service.impl;
 
+import com.webDb.dto.ProjectDTO;
 import com.webDb.dto.TaskDTO;
 import com.webDb.dto.UserDTO;
+import com.webDb.entity.Project;
 import com.webDb.entity.Task;
+import com.webDb.entity.User;
 import com.webDb.enums.Status;
 import com.webDb.mapper.MapperUtil;
 import com.webDb.repository.TaskRepository;
 import com.webDb.service.TaskService;
+import com.webDb.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,10 +24,12 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
     private final MapperUtil mapperUtil;
+    private final UserService userService;
 
-    public TaskServiceImpl(TaskRepository taskRepository, MapperUtil mapperUtil) {
+    public TaskServiceImpl(TaskRepository taskRepository, MapperUtil mapperUtil, UserService userService) {
         this.taskRepository = taskRepository;
         this.mapperUtil = mapperUtil;
+        this.userService = userService;
     }
 
     @Override
@@ -59,7 +65,7 @@ public class TaskServiceImpl implements TaskService {
 
        if(foundTask.isPresent()){
            convertedTask.setAssignedDate(foundTask.get().getAssignedDate());
-           convertedTask.setTaskStatus(foundTask.get().getTaskStatus());
+           convertedTask.setTaskStatus(dto.getTaskStatus() == null ? foundTask.get().getTaskStatus() : dto.getTaskStatus() );
            taskRepository.save(convertedTask);
        }
 
@@ -85,5 +91,29 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public int totalCompletedTask(String projectCode) {
         return taskRepository.totalCompletedTask(projectCode);
+    }
+
+    @Override
+    public void deleteByProject(ProjectDTO project) {
+      List<Task> taskToDelete =  taskRepository.findAllByProject(mapperUtil.convert(project, Project.class));
+      taskToDelete.forEach(task -> delete(task.getId()));
+    }
+
+    @Override
+    public void completeByProject(ProjectDTO project) {
+        List<Task> taskToComplete =  taskRepository.findAllByProject(mapperUtil.convert(project, Project.class));
+        taskToComplete.forEach(task ->{
+            TaskDTO taskDTO= mapperUtil.convert(task,TaskDTO.class);
+            taskDTO.setTaskStatus(Status.COMPLETE);
+            update(taskDTO);
+        });
+
+    }
+
+    @Override
+    public List<TaskDTO> listAllTasksByStatusIsNot(Status status) {
+        UserDTO loggedInUser= userService.findByUserName("john@employee.com");
+        List<Task> tasks = taskRepository.findAllByTaskStatusIsNotAndAssignedEmployee(status, mapperUtil.convert(loggedInUser, User.class));
+        return tasks.stream().map(task -> mapperUtil.convert(task,TaskDTO.class)).collect(Collectors.toList());
     }
 }

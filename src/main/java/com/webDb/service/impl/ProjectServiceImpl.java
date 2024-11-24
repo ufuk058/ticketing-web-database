@@ -70,6 +70,7 @@ public class ProjectServiceImpl implements ProjectService {
         p1.setIsDeleted(true);
         p1.setProjectCode(p1.getProjectCode()+"-"+p1.getId());
         projectRepository.save(p1);
+        taskService.deleteByProject(mapperUtil.convert(p1,ProjectDTO.class));
 
 
     }
@@ -79,6 +80,8 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findByProjectCode(projectCode);
         project.setProjectStatus(Status.COMPLETE);
         projectRepository.save(project);
+
+        taskService.completeByProject(mapperUtil.convert(project,ProjectDTO.class));
     }
 
     @Override
