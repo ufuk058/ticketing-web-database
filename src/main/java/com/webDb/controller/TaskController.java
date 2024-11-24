@@ -105,13 +105,13 @@ public class TaskController {
         return "task/pending-tasks";
     }
 
-//    @GetMapping("employee/archive")
-//    public String employeeArchivedTasks(Model model){
-//
-//        model.addAttribute("tasks", taskService.findAllTasksByStatus(Status.COMPLETE));
-//
-//        return "task/archive";
-//    }
+    @GetMapping("employee/archive")
+    public String employeeArchivedTasks(Model model){
+
+        model.addAttribute("tasks", taskService.litsAllTasksByStatus(Status.COMPLETE));
+
+        return "task/archive";
+    }
 
 //    @GetMapping("employee/edit/{id}")
 //    public String employeeEditTask(@PathVariable("id") Long id, Model model){
