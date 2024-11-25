@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> listAllUsers() {
-        List<User> userList=userRepository.findAll();
+        List<User> userList=userRepository.findAllByIsDeletedOrderByFirstNameDesc(false);
 
        // return userList.stream().map(userMapper::convertToDto).collect(Collectors.toList());
         return userList.stream().map(user->mapperUtil.convert(user, UserDTO.class)).collect(Collectors.toList());
@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO findByUserName(String username) {
-        User user= userRepository.findByUserName(username);
+        User user= userRepository.findByUserNameAndIsDeleted(username,false);
         return mapperUtil.convert(user,UserDTO.class);
     }
 
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void update(UserDTO dto) {
 
-        User foundUser=userRepository.findByUserName(dto.getUserName());
+        User foundUser=userRepository.findByUserNameAndIsDeleted(dto.getUserName(),false);
         User updatedUser=mapperUtil.convert(dto,User.class);
         updatedUser.setId(foundUser.getId());
         userRepository.save(updatedUser);
@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(String username) {
 
-        User user= userRepository.findByUserName(username);
+        User user= userRepository.findByUserNameAndIsDeleted(username,false);
 
         if(checkIfUserCanBeDeleted(mapperUtil.convert(user,UserDTO.class))){
             user.setIsDeleted(true);
@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> listAllByRole(String role){
-        List<User> users=userRepository.findByRoleDescriptionIgnoreCase(role);
+        List<User> users=userRepository.findByRoleDescriptionIgnoreCaseAndIsDeleted(role,false);
         return users.stream().map(user -> mapperUtil.convert(user,UserDTO.class)).collect(Collectors.toList());
     }
 }
